@@ -30,8 +30,6 @@ export class EventsGateway {
     const roomInfo = await this.roomService.removeAttenders(client.id);
 
     if (roomInfo) {
-      console.log('room info:', roomInfo);
-
       client.leave(roomInfo.roomName);
       client.to(roomInfo.roomName).emit('newAttenders', roomInfo);
     }
