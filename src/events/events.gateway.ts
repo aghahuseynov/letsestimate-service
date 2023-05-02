@@ -12,7 +12,9 @@ const roomEstimations: RoomEstimation[] = [];
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true,
   },
 })
 export class EventsGateway {
