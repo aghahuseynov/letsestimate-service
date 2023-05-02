@@ -11,7 +11,9 @@ import { RoomService } from 'src/room/room.service';
 const roomEstimations: RoomEstimation[] = [];
 
 @WebSocketGateway({
-  cors: true,
+  cors: {
+    origin: '*',
+  },
 })
 export class EventsGateway {
   constructor(private roomService: RoomService) {}
