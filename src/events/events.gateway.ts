@@ -10,7 +10,7 @@ import { RoomService } from 'src/room/room.service';
 // TODO: looks ugly maybe we can move this to mongo
 const roomEstimations: RoomEstimation[] = [];
 
-@WebSocketGateway(8080, {
+@WebSocketGateway({
   cors: {
     origin: '*',
   },
