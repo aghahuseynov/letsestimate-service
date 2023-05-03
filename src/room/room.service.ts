@@ -19,6 +19,7 @@ export class RoomService {
           isAdmin: true,
         },
       ],
+      roomStatus: false,
     };
 
     const roomCollection = new this.roomModel(room);
@@ -64,6 +65,20 @@ export class RoomService {
 
   async findRoom(roomName: string) {
     return (await this.roomModel.findOne({ roomName: roomName })).toJSON();
+  }
+
+  async changeRoomStatus(roomName: string) {
+    const currentModel = (
+      await this.roomModel.findOne({ roomName: roomName })
+    )?.toJSON();
+
+    currentModel.roomStatus = !currentModel.roomStatus;
+
+    await this.roomModel
+      .findOneAndUpdate({ roomName: roomName }, currentModel)
+      .exec();
+
+    return await this.findRoom(roomName);
   }
 
   async removeAttenders(socketId: string) {

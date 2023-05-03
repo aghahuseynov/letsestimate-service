@@ -114,4 +114,17 @@ export class EventsGateway {
 
     this.roomService.createRoom(roomName, playerName, client.id);
   }
+
+  @SubscribeMessage('changeRoomStatus')
+  async changeRoomStatus(client: Socket, roomInfo: { roomName: string }) {
+    const { roomName } = roomInfo;
+
+    const room = await this.roomService.changeRoomStatus(roomName);
+
+    client.to(roomName).emit('changeRoomStatus', room);
+
+    console.log('room info:', room);
+
+    return room;
+  }
 }

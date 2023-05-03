@@ -7,6 +7,7 @@ export type Attender = {
 export type RoomType = {
   roomName: string;
   attenders: Attender[];
+  roomStatus: boolean;
 };
 
 export type AttenderEstimation = {

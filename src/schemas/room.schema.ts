@@ -11,6 +11,9 @@ export class Room {
 
   @Prop()
   attenders: AttendersDto[];
+
+  @Prop()
+  roomStatus: boolean;
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
