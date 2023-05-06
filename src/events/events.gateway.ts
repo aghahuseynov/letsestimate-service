@@ -8,7 +8,7 @@ import { RoomEstimation } from 'src/common/types';
 import { RoomService } from 'src/room/room.service';
 
 // TODO: looks ugly maybe we can move this to mongo
-const roomEstimations: RoomEstimation[] = [];
+let roomEstimations: RoomEstimation[] = [];
 
 @WebSocketGateway({
   cors: {
@@ -121,10 +121,19 @@ export class EventsGateway {
 
     const room = await this.roomService.changeRoomStatus(roomName);
 
+    if (!room.roomStatus) {
+      roomEstimations = roomEstimations.filter((q) => q.roomName != roomName);
+    }
+
     client.to(roomName).emit('changeRoomStatus', room);
+    client.to(roomName).emit(
+      'showSize',
+      roomEstimations.find((q) => q.roomName === roomName),
+    );
 
-    console.log('room info:', room);
-
-    return room;
+    return {
+      room: room,
+      roomEstimations: roomEstimations.find((q) => q.roomName === roomName),
+    };
   }
 }
