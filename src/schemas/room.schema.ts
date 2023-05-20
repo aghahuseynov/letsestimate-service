@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { RoomStatusType } from 'src/common/types';
 import { AttendersDto } from 'src/room/dtos/attenders.dto';
 
 export type RoomDocument = HydratedDocument<Room>;
@@ -13,7 +14,7 @@ export class Room {
   attenders: AttendersDto[];
 
   @Prop()
-  roomStatus: boolean;
+  roomStatus: RoomStatusType;
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);

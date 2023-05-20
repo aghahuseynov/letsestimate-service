@@ -4,10 +4,12 @@ export type Attender = {
   isAdmin: boolean;
 };
 
+export type RoomStatusType = 'start' | 'inprogress' | 'end';
+
 export type RoomType = {
   roomName: string;
   attenders: Attender[];
-  roomStatus: boolean;
+  roomStatus: RoomStatusType;
 };
 
 export type AttenderEstimation = {

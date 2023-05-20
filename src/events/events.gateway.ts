@@ -8,7 +8,7 @@ import { RoomEstimation } from 'src/common/types';
 import { RoomService } from 'src/room/room.service';
 
 // TODO: looks ugly maybe we can move this to mongo
-let roomEstimations: RoomEstimation[] = [];
+const roomEstimations: RoomEstimation[] = [];
 
 @WebSocketGateway({
   cors: {
@@ -72,6 +72,11 @@ export class EventsGateway {
         attenders: [{ playerName, selectedEstimationSize }],
       });
     }
+
+    client.to(roomName).emit(
+      'sendSelectedSize',
+      roomEstimations.find((q) => q.roomName === roomName),
+    );
   }
 
   @SubscribeMessage('showSize')
@@ -81,12 +86,11 @@ export class EventsGateway {
   ) {
     const { roomName } = roomInfo;
 
-    client.to(roomName).emit(
-      'showSize',
-      roomEstimations.find((q) => q.roomName === roomName),
-    );
+    const room = roomEstimations.find((q) => q.roomName === roomName);
 
-    return roomEstimations.find((q) => q.roomName === roomName);
+    client.to(roomName).emit('showSize', room);
+
+    return room;
   }
 
   @SubscribeMessage('joinRoom')
@@ -121,11 +125,18 @@ export class EventsGateway {
 
     const room = await this.roomService.changeRoomStatus(roomName);
 
-    if (!room.roomStatus) {
-      roomEstimations = roomEstimations.filter((q) => q.roomName != roomName);
+    client.to(roomName).emit('changeRoomStatus', room);
+
+    if (
+      room.roomStatus === 'start' &&
+      roomEstimations.find((q) => q.roomName === roomName)
+    ) {
+      const roomIndex = roomEstimations.findIndex(
+        (q) => q.roomName === roomName,
+      );
+      roomEstimations[roomIndex].attenders = [];
     }
 
-    client.to(roomName).emit('changeRoomStatus', room);
     client.to(roomName).emit(
       'showSize',
       roomEstimations.find((q) => q.roomName === roomName),

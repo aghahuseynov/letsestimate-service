@@ -19,7 +19,7 @@ export class RoomService {
           isAdmin: true,
         },
       ],
-      roomStatus: false,
+      roomStatus: 'start',
     };
 
     const roomCollection = new this.roomModel(room);
@@ -72,7 +72,13 @@ export class RoomService {
       await this.roomModel.findOne({ roomName: roomName })
     )?.toJSON();
 
-    currentModel.roomStatus = !currentModel.roomStatus;
+    if (currentModel.roomStatus === 'start') {
+      currentModel.roomStatus = 'inprogress';
+    } else if (currentModel.roomStatus === 'inprogress') {
+      currentModel.roomStatus = 'end';
+    } else {
+      currentModel.roomStatus = 'start';
+    }
 
     await this.roomModel
       .findOneAndUpdate({ roomName: roomName }, currentModel)
